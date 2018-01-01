@@ -27,7 +27,7 @@ echo "Tagging version : $GIT_VERSION"
 git tag -a -m "Tagging version $GIT_VERSION" "v$GIT_VERSION"
 
 # push on master and tags
-git push origin master -f
+# git push origin master -f
 git push origin --tags
 
 # ask for deleting hotfix-branch
