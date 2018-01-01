@@ -12,13 +12,18 @@ function parse_git_branch() {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
 }
 
-# get last commit hash prepended
+# get last commit
 function parse_git_hash() {
   git rev-parse --short HEAD 2> /dev/null | sed "s/\(.*\)//"
 }
 
+# get last commit without 'hotfix-' string
+function parse_commit() {
+  echo $GIT_BRANCH | sed 's/.*hotfix-\([^ ]*\).*/\1/'
+} 
+
 GIT_BRANCH=$(parse_git_branch)$(parse_git_hash)
-GIT_VERSION=$(echo $GIT_BRANCH | sed 's/.*hotfix-\([^ ]*\).*/\1/')
+GIT_VERSION=$(parse_commit)
 
 # checkout on master branch, merge and tag
 git checkout master
@@ -27,7 +32,7 @@ echo "Tagging version : $GIT_VERSION"
 git tag -a -m "Tagging version $GIT_VERSION" "v$GIT_VERSION"
 
 # push on master and tags
-# git push origin master -f
+git push origin master -f
 git push origin --tags
 
 # ask for deleting hotfix-branch
